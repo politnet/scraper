@@ -54,10 +54,13 @@ def readPoliticianTweets(politician, baseDirectory):
 
 def getScrapedTweets(scraper, politician):
     rawTweets = scraper.tweets([politician['user_id']])
-    return [getTweets(rawTweet) for rawTweet in rawTweets]
+    tweets = []
+    for rawTweet in rawTweets:
+        tweets += getTweets(rawTweet)
+    return tweets
 
 def combineTweets(tweets1, tweets2):
-    tweets = tweets1.copy()
+    tweets = copy.deepcopy(tweets1)
     for tweet in tweets2:
         if not any(existing_tweet['id'] == tweet['id'] for existing_tweet in tweets):
             tweets.append(tweet)
@@ -83,7 +86,7 @@ def getPoliticiansTweets(scraper, writeDirectory, politicians):
             print(f"Saving {len(combinedTweets) - len(scrapedTweets)} new tweets for {politician['user_account_name']}")
         savePoliticians("data/politicians.json", politicians)
         return True
-    except json.JSONDecodeError:
+    except Exception as e:
         savePoliticians("data/politicians.json", politicians)
         return False
     

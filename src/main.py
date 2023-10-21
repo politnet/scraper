@@ -14,26 +14,10 @@ DATA_DIRECTORY = "data"
 POLITICIANS_FILE = F"{DATA_DIRECTORY}/politicians.json"
 
 scraper = Scraper(TWITTER_EMAIL, TWITTER_USERNAME, TWITTER_PASSWORD)
-
-# def getTweetsFromWeb():
-#     scraper = Scraper(TWITTER_EMAIL, TWITTER_USERNAME, TWITTER_PASSWORD, save=True)
-#     rawTweets = scraper.tweets(['3242182113'])
-#     return[getTweets(rawTweet) for rawTweet in rawTweets]
-       
-# def getTweetsFromFile(baseDirectory): 
-#     tweets = []
-#     for file in os.listdir(baseDirectory):
-#         with open(f'{baseDirectory}/{file}', encoding="utf8") as json_file:
-#             data = json.load(json_file)
-#             tweets += getTweets(data)
-#     return tweets
-
-# tweets = getTweetsFromFile("data/3242182113") # getTweetsFromWeb()
-# with open('data/processed/3242182113.json', 'w+', encoding="utf8") as outfile:
-#     json.dump(tweets, outfile, indent=4, ensure_ascii=False)
-
 politicians = updateAndGetPoliticians(scraper, POLITICIANS_FILE)
-getPoliticiansTweets(scraper, DATA_DIRECTORY, politicians)
+succeded = getPoliticiansTweets(scraper, DATA_DIRECTORY, politicians)
+infoMessage = "Scraping finished successfully" if succeded else "Failed to scrape all politicians due to the rate limit being reached."
+print(infoMessage)
 
 
 
