@@ -52,3 +52,6 @@ def updateAndGetPoliticians(scraper, jsonFilename):
     allPoliticians = completeUsers + users
     savePoliticians(jsonFilename, allPoliticians)
     return allPoliticians
+
+def setPoliticianLastUpdatedToNow(politician):
+    politician["last_modified"] = datetime.datetime.now(datetime.timezone.utc).isoformat()

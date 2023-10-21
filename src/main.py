@@ -1,9 +1,6 @@
-import datetime
-import json
-import os
 import sys
 from twitter.scraper import Scraper
-from tweetExtractor import getTweets
+from tweetExtractor import getPoliticiansTweets
 from userExtractor import updateAndGetPoliticians
 
 if len(sys.argv) < 4:
@@ -13,7 +10,9 @@ if len(sys.argv) < 4:
 TWITTER_EMAIL = sys.argv[1]
 TWITTER_USERNAME = sys.argv[2]
 TWITTER_PASSWORD = sys.argv[3]
-POLITICIANS_FILE = "data/politicians.json"
+DATA_DIRECTORY = "data"
+POLITICIANS_FILE = F"{DATA_DIRECTORY}/politicians.json"
+
 scraper = Scraper(TWITTER_EMAIL, TWITTER_USERNAME, TWITTER_PASSWORD)
 
 # def getTweetsFromWeb():
@@ -34,7 +33,7 @@ scraper = Scraper(TWITTER_EMAIL, TWITTER_USERNAME, TWITTER_PASSWORD)
 #     json.dump(tweets, outfile, indent=4, ensure_ascii=False)
 
 politicians = updateAndGetPoliticians(scraper, POLITICIANS_FILE)
-print(politicians)
+getPoliticiansTweets(scraper, DATA_DIRECTORY, politicians)
 
 
 
