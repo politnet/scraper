@@ -41,8 +41,12 @@ def getTweets(data):
     tweets = []
     for entry in extractEntries(data):
         if 'tweet' in entry['entryId']:
-            tweetFullData = entry['content']['itemContent']['tweet_results']['result']
-            tweets.append(extractTweetData(tweetFullData))
+            try:
+                tweetFullData = entry['content']['itemContent']['tweet_results']['result']
+                tweets.append(extractTweetData(tweetFullData))
+            except KeyError:
+                print("Skipping entry due to the KeyError.")
+                continue
     return tweets
 
 def readPoliticianTweets(politician):
@@ -88,7 +92,11 @@ def getPoliticiansTweets(scraper, politicians):
             print(f"Saving {len(combinedTweets) - len(scrapedTweets)} new tweets for {politician['user_account_name']}")
         savePoliticians(politicians)
         return True
-    except Exception as e:
+    except KeyError as e:
+        print(f"KeyError: {e}")
+        savePoliticians(politicians)
+        return False
+    except Exception: # KeyError
         savePoliticians(politicians)
         return False
     
