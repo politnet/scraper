@@ -1,6 +1,7 @@
 import globals
 from argparse import ArgumentParser
 from user.extractors import PoliticianExtractor
+from processor.query_processor import DescriptionProcessor
 from twitter.scraper import Scraper
 from twitter.util import init_session
 
@@ -12,10 +13,13 @@ def get_account_scraper(args):
     
 def perfrom_action(scraper, action):
     action_name, value = action
+    politician_extractor = PoliticianExtractor(scraper)
     
     if action_name == "add-politician":
-        politician_extractor = PoliticianExtractor(scraper)
         politician_extractor.fetch_and_save_politican(value)
+    elif action_name == "generate-description-queries":
+        description_queries = DescriptionProcessor.generate_politicians_description_query(value)
+        print(description_queries)
     else:
         raise ValueError(f"Invalid action: {action}. Valid actions: {globals.LIST_OF_ACTIONS}.")
     
