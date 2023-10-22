@@ -27,7 +27,8 @@ def extractTweet(result):
             "id": legacy['id_str'],
             "created_at": legacy['created_at'],
             "full_text": legacy['full_text'],
-            "reposted": False
+            "reposted": False,
+            "processed": False
         }
     
 def extractTweetData(result):
