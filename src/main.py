@@ -1,6 +1,6 @@
 import globals
 from argparse import ArgumentParser
-from user.extractors import PoliticianExtractor
+from user.utils import PoliticianUtils
 from processor.query_processor import DescriptionProcessor
 from twitter.scraper import Scraper
 from twitter.util import init_session
@@ -13,7 +13,7 @@ def get_account_scraper(args):
     
 def perfrom_action(scraper, action):
     action_name, value = action
-    politician_extractor = PoliticianExtractor(scraper)
+    politician_extractor = PoliticianUtils(scraper)
     
     if action_name == "add-politician":
         politician_extractor.fetch_and_save_politican(value)

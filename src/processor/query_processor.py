@@ -1,4 +1,4 @@
-from user.extractors import PoliticianExtractor
+from user.utils import PoliticianUtils
 from tweet.utils import TweetUtils
 
 class DescriptionProcessor:
@@ -25,7 +25,7 @@ class DescriptionProcessor:
 
     def generate_politicians_description_query(num_of_tweets):
         num_of_tweets = int(num_of_tweets)
-        politicians = PoliticianExtractor.read_politicians()
+        politicians = PoliticianUtils.read_politicians()
         result = []
         for politician in politicians:
             unprocessed_tweets = TweetUtils.read_unprocessed_tweets(politician, num_of_tweets)
