@@ -1,4 +1,5 @@
 import copy
+import globals as gl
 import json
 import os
 from userExtractor import extractUser, extractUserMentions, setPoliticianLastUpdatedToNow, savePoliticians
@@ -43,13 +44,13 @@ def getTweets(data):
             tweets.append(extractTweetData(tweetFullData))
     return tweets
 
-def readPoliticianTweets(politician, baseDirectory):
-    filename = f'{baseDirectory}/tweets/{politician["user_account_name"]}.json'
-    if os.path.isfile(filename) == False:
+def readPoliticianTweets(politician):
+    filepath = f'{gl.TWEETS_DIRECTORY}/{politician["user_account_name"]}.json'
+    if os.path.isfile(filepath) == False:
         return []
     
-    with open(filename, encoding="utf8") as jsonFile:
-        data = json.load(jsonFile)
+    with open(filepath, encoding="utf8") as file:
+        data = json.load(file)
         return data
 
 def getScrapedTweets(scraper, politician):
@@ -66,27 +67,27 @@ def combineTweets(tweets1, tweets2):
             tweets.append(tweet)
     return tweets
 
-def saveTweets(politician, baseDirectory, tweets):
-    filename = f'{baseDirectory}/tweets/{politician["user_account_name"]}.json'
-    with open(filename, 'w+', encoding="utf8") as jsonFile:
-        json.dump(tweets, jsonFile, indent=4, ensure_ascii=False)
+def saveTweets(politician, tweets):
+    filepath = f'{gl.TWEETS_DIRECTORY}/{politician["user_account_name"]}.json'
+    with open(filepath, 'w+', encoding="utf8") as file:
+        json.dump(tweets, file, indent=4, ensure_ascii=False)
 
 def sortByLastModified(politicians):
     return sorted(politicians, key=lambda politician: politician['last_modified'])
        
-def getPoliticiansTweets(scraper, writeDirectory, politicians):
+def getPoliticiansTweets(scraper, politicians):
     try:
         for politician in sortByLastModified(politicians):
             print(f"Getting tweets for {politician['user_account_name']}...")
             scrapedTweets = getScrapedTweets(scraper, politician)
-            savedTweets = readPoliticianTweets(politician, writeDirectory)
+            savedTweets = readPoliticianTweets(politician)
             combinedTweets = combineTweets(savedTweets, scrapedTweets)
-            saveTweets(politician, writeDirectory, combinedTweets)
+            saveTweets(politician, combinedTweets)
             setPoliticianLastUpdatedToNow(politician)
             print(f"Saving {len(combinedTweets) - len(scrapedTweets)} new tweets for {politician['user_account_name']}")
-        savePoliticians("data/politicians.json", politicians)
+        savePoliticians(politicians)
         return True
     except Exception as e:
-        savePoliticians("data/politicians.json", politicians)
+        savePoliticians(politicians)
         return False
     

@@ -1,3 +1,4 @@
+import globals as gl
 import json
 import datetime
 
@@ -18,10 +19,10 @@ def extractMentionedUser(mention):
 def extractUserMentions(legacy):
     return [extractMentionedUser(mention) for mention in legacy['entities']['user_mentions']]
 
-def readPoliticians(jsonFilename):
+def readPoliticians():
     completeUsers = []
     incompleteUsers = []
-    with open(jsonFilename, 'r', encoding="utf8") as file:
+    with open(gl.POLITICIANS_FILE, 'r', encoding="utf8") as file:
         for policitian in json.load(file)["politicians"]:
             if policitian["user_id"] is None:
                 incompleteUsers.append(policitian)
@@ -29,9 +30,9 @@ def readPoliticians(jsonFilename):
                 completeUsers.append(policitian)
     return completeUsers, incompleteUsers
 
-def savePoliticians(jsonFilename, politicians):
-    with open(jsonFilename, 'w+', encoding="utf8") as outfile:
-        json.dump({"politicians": politicians}, outfile, indent=4, ensure_ascii=False)
+def savePoliticians(politicians):
+    with open(gl.POLITICIANS_FILE, 'w+', encoding="utf8") as file:
+        json.dump({"politicians": politicians}, file, indent=4, ensure_ascii=False)
         
 def getUsers(scraper, users):
     if len(users) == 0:
@@ -46,11 +47,11 @@ def getUsers(scraper, users):
         users[i]["last_modified"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     return users
 
-def updateAndGetPoliticians(scraper, jsonFilename):
-    completeUsers, incompleteUsers = readPoliticians(jsonFilename)
+def updateAndGetPoliticians(scraper):
+    completeUsers, incompleteUsers = readPoliticians()
     users = getUsers(scraper, incompleteUsers)
     allPoliticians = completeUsers + users
-    savePoliticians(jsonFilename, allPoliticians)
+    savePoliticians(allPoliticians)
     return allPoliticians
 
 def setPoliticianLastUpdatedToNow(politician):
