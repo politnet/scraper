@@ -1,8 +1,8 @@
 import globals
 from argparse import ArgumentParser
 from user.utils import PoliticianUtils
-from tweet.tweetExtractor import TweetExtractor
-from processor.query_processor import DescriptionProcessor
+from tweet.extractor import TweetExtractor
+from processor.builder import DescriptionBuilder
 from twitter.scraper import Scraper
 from twitter.util import init_session
 
@@ -19,9 +19,9 @@ def perfrom_action(scraper, action):
         print(f"Adding politician {value}...")
         politician_extractor = PoliticianUtils(scraper)
         politician_extractor.fetch_and_save_politican(value)
-    elif action_name == "generate-description-queries":
-        print("Generating description queries...")
-        description_queries = DescriptionProcessor.generate_politicians_description_query(value)
+    elif action_name == "build-description-queries":
+        print("Building description queries...")
+        description_queries = DescriptionBuilder.build_politicians_description_query(value)
         print(description_queries)
     elif action_name == "scrape-tweets":
         print("Scraping tweets...")

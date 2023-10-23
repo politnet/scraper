@@ -1,4 +1,4 @@
-from user.extractors import UserExtractor
+from user.extractor import UserExtractor
 from user.utils import PoliticianUtils
 from tweet.utils import TweetUtils
 
@@ -7,7 +7,7 @@ class TweetExtractor:
     def __init__(self, scraper):
         self.scraper = scraper
         
-    def __extract_entries(data):
+    def extract_entries(data):
         entries = []
         instructions = data['data']['user']['result']['timeline_v2']['timeline']['instructions']
         for instruction in instructions:
@@ -17,11 +17,11 @@ class TweetExtractor:
                 entries += [instruction['entry']]
         return entries
 
-    def __extract_tweet_data(result):
+    def extract_tweet_data(result):
         user = result['core']['user_results']['result']
         legacy = result['legacy']
         if 'retweeted_status_result' in legacy:
-            tweetData = TweetExtractor.__extract_tweet(legacy['retweeted_status_result']['result'])
+            tweetData = TweetExtractor.extract_tweet(legacy['retweeted_status_result']['result'])
             tweetData['reposted'] = True
             tweetData['timeline_owner'] = UserExtractor.extract_user(user)
             return tweetData
@@ -37,36 +37,43 @@ class TweetExtractor:
                 "processed": False
             }
     
-    def __extract_tweet(result):
+    def extract_tweet(result):
         if result['__typename'] == "Tweet":
-            return TweetExtractor.__extract_tweet_data(result)
+            return TweetExtractor.extract_tweet_data(result)
         elif result['__typename'] == 'TweetWithVisibilityResults':
-            return TweetExtractor.__extract_tweet_data(result['tweet'])
+            return TweetExtractor.extract_tweet_data(result['tweet'])
     
-    def __get_tweets(data):
+    def extract_tweets(data):
         tweets = []
-        for entry in TweetExtractor.__extract_entries(data):
+        for entry in TweetExtractor.extract_entries(data):
             if 'tweet' in entry['entryId']:
                 try:
                     tweet_full_data = entry['content']['itemContent']['tweet_results']['result']
-                    tweets.append(TweetExtractor.__extract_tweet_data(tweet_full_data))
+                    tweets.append(TweetExtractor.extract_tweet_data(tweet_full_data))
                 except KeyError as e:
                     print("Skipping entry due to the KeyError. Error: ", e)
                     continue
         return tweets
 
-    def __get_scraped_tweets(self, politician):
-        raw_tweets = self.scraper.tweets([politician['user_id']])
+    def scrape_tweets(self, politician):
+        raw_tweets_data = None
         tweets = []
-        for raw_tweet in raw_tweets:
-            tweets += TweetExtractor.__get_tweets(raw_tweet)
+        
+        try:
+            raw_tweets_data = self.scraper.tweets([politician['user_id']])
+        except:
+            print(f"Failed to scrape tweets for {politician['user_account_name']}. Rate limit exceeded.")
+            return []
+        
+        for raw_tweet_data in raw_tweets_data:
+            tweets += TweetExtractor.extract_tweets(raw_tweet_data)
         return tweets
     
     def get_politicians_tweets(self, politicians):
         try:
             for politician in PoliticianUtils.sort_by_last_modified(politicians):
                 print(f"Getting tweets for {politician['user_account_name']}...")
-                scraped_tweets = self.__get_scraped_tweets(politician)
+                scraped_tweets = self.scrape_tweets(politician)
                 saved_tweets = TweetUtils.read_tweets(politician)
                 combined_tweets = TweetUtils.combine_tweets(saved_tweets, scraped_tweets)
                 TweetUtils.save_tweets(politician, combined_tweets)
@@ -74,10 +81,6 @@ class TweetExtractor:
                 print(f"Saving {len(combined_tweets) - len(saved_tweets)} new tweets for {politician['user_account_name']}")
             PoliticianUtils.save_politicans(politicians)
             return True
-        except KeyError as e:
-            print(f"KeyError: {e}")
-            PoliticianUtils.save_politicans(politicians)
-            return False
         except Exception as e:
             print(f"Unexpected error: {e}")
             PoliticianUtils.save_politicans(politicians)

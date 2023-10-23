@@ -1,7 +1,7 @@
 import globals as gl
 import json
 import datetime
-from user.extractors import UserExtractor
+from user.extractor import UserExtractor
 
 class PoliticianUtils:
         

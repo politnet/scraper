@@ -7,9 +7,6 @@ class TweetUtils:
     
     def save_tweets(politician, tweets):
         file_path = f'{globals.TWEETS_DIRECTORY}/{politician["user_account_name"]}.json'
-        if not os.path.isfile(file_path):
-            return []
-        
         with open(file_path, 'w+', encoding="utf8") as file:
             json.dump(tweets, file, indent=4, ensure_ascii=False)
             
