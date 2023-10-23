@@ -13,3 +13,6 @@ class UserExtractor:
             "user_full_name": mention['name'],
             "user_account_name": mention['screen_name'],
         }
+        
+    def extract_mentioned_users(legacy):
+        return [UserExtractor.extract_mentioned_user(mention) for mention in legacy['entities']['user_mentions']]
