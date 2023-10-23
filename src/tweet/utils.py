@@ -1,3 +1,4 @@
+import copy
 import globals
 import json
 import os
@@ -31,3 +32,10 @@ class TweetUtils:
                     tweet["processed"] = True
                     
         TweetUtils.save_tweets(politician, tweets)
+        
+    def combine_tweets(tweets1, tweets2):
+        tweets = copy.deepcopy(tweets1)
+        for tweet in tweets2:
+            if not any(existing_tweet['id'] == tweet['id'] for existing_tweet in tweets):
+                tweets.append(tweet)
+        return tweets

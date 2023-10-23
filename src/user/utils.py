@@ -7,10 +7,6 @@ class PoliticianUtils:
         
     def __init__(self, scraper):
         self.scraper = scraper
-    
-    def __save_politicans(politicians):
-        with open(gl.POLITICIANS_FILE, 'w+', encoding="utf8") as file:
-            json.dump({"politicians": politicians}, file, indent=4, ensure_ascii=False)
             
     def __save_politician(politician):
         politicians = PoliticianUtils.read_politicians()
@@ -38,6 +34,16 @@ class PoliticianUtils:
                 return True
         return False
     
+    def set_politician_last_updated_to_now(politician):
+        politician["last_modified"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    
+    def save_politicans(politicians):
+        with open(gl.POLITICIANS_FILE, 'w+', encoding="utf8") as file:
+            json.dump({"politicians": politicians}, file, indent=4, ensure_ascii=False)
+            
+    def sort_by_last_modified(politicians):
+        return sorted(politicians, key=lambda politician: politician['last_modified'])
+
     def read_politicians():
         with open(gl.POLITICIANS_FILE, 'r', encoding="utf8") as file:
             data = json.load(file)
