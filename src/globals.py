@@ -1,4 +1,4 @@
-LIST_OF_ACTIONS = ["add-politician", "build-description-queries", "scrape-tweets"]
+LIST_OF_ACTIONS = ["add-politician", "build-description-queries", "scrape-tweets", "schedule-tweets-scraping"]
 
 OUT_DIRECTORY = "out"
 DATA_DIRECTORY = "data"

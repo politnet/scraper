@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 from user.utils import PoliticianUtils
 from tweet.extractor import TweetExtractor
 from processor.builder import DescriptionBuilder
+from processor.scheduler import TweetScheduler
 from twitter.scraper import Scraper
 from twitter.util import init_session
 
@@ -17,17 +18,17 @@ def perfrom_action(scraper, action):
     
     if action_name == "add-politician":
         print(f"Adding politician {value}...")
-        politician_extractor = PoliticianUtils(scraper)
-        politician_extractor.fetch_and_save_politican(value)
+        PoliticianUtils(scraper).fetch_and_save_politican(value)
     elif action_name == "build-description-queries":
         print("Building description queries...")
         description_queries = DescriptionBuilder.build_politicians_description_query(value)
         print(description_queries)
     elif action_name == "scrape-tweets":
         print("Scraping tweets...")
-        tweet_extractor = TweetExtractor(scraper)
-        politicians = PoliticianUtils.read_politicians()
-        tweet_extractor.get_politicians_tweets(politicians)
+        TweetExtractor(scraper).get_politicians_tweets()
+    elif action_name == "schedule-tweets-scraping":
+        print("Scheduling tweets scraping...")
+        TweetScheduler(scraper).schedule_scraping(value)
     else:
         raise ValueError(f"Invalid action: {action}. Valid actions: {globals.LIST_OF_ACTIONS}.")
     

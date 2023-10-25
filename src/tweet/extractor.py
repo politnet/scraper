@@ -55,7 +55,7 @@ class TweetExtractor:
                     continue
         return tweets
 
-    def scrape_tweets(self, politician):
+    def __scrape_tweets(self, politician):
         raw_tweets_data = None
         tweets = []
         
@@ -63,27 +63,31 @@ class TweetExtractor:
             raw_tweets_data = self.scraper.tweets([politician['user_id']])
         except:
             print(f"Failed to scrape tweets for {politician['user_account_name']}. Rate limit exceeded.")
-            return []
+            return None
         
         for raw_tweet_data in raw_tweets_data:
             tweets += TweetExtractor.extract_tweets(raw_tweet_data)
         return tweets
     
-    def get_politicians_tweets(self, politicians):
-        try:
-            for politician in PoliticianUtils.sort_by_last_modified(politicians):
-                print(f"Getting tweets for {politician['user_account_name']}...")
-                scraped_tweets = self.scrape_tweets(politician)
-                saved_tweets = TweetUtils.read_tweets(politician)
-                combined_tweets = TweetUtils.combine_tweets(saved_tweets, scraped_tweets)
-                TweetUtils.save_tweets(politician, combined_tweets)
-                PoliticianUtils.set_politician_last_updated_to_now(politician)
-                print(f"Saving {len(combined_tweets) - len(saved_tweets)} new tweets for {politician['user_account_name']}")
+    def __get_politicians_tweets(self, politicians):
+        for politician in PoliticianUtils.sort_by_last_modified(politicians):
+            print(f"Getting tweets for {politician['user_account_name']}...")
+            scraped_tweets = self.__scrape_tweets(politician)
+            if scraped_tweets is None:
+                return False
+            
+            saved_tweets = TweetUtils.read_tweets(politician)
+            combined_tweets = TweetUtils.combine_tweets(saved_tweets, scraped_tweets)
+            TweetUtils.save_tweets(politician, combined_tweets)
+            PoliticianUtils.set_politician_last_updated_to_now(politician)
+            print(f"Saving {len(combined_tweets) - len(saved_tweets)} new tweets for {politician['user_account_name']}")
             PoliticianUtils.save_politicans(politicians)
-            return True
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-            PoliticianUtils.save_politicans(politicians)
-            return False
+            
+        return True
+        
+    def get_politicians_tweets(self):
+        politicians = PoliticianUtils.read_politicians()
+        succeeded = self.__get_politicians_tweets(politicians)
+        print("Result of scraping tweets: ", "Succeeded" if succeeded else "Failed")
 
     
