@@ -14,20 +14,22 @@ def get_account_scraper(args):
     return Scraper(email=args.email, username=args.username, password=args.password, out=globals.OUT_DIRECTORY)  
 
 def add_twitter_account(scraper, account_name):
-    pass
+    PoliticianUtils(scraper).fetch_and_save_politican(account_name)
 
-def build_description_queries(scraper, num_of_tweets):
+def build_description_queries(num_of_tweets):
     if num_of_tweets is None:
         num_of_tweets = globals.DEFAULT_DESCRIPTION_QUERY_NUM_OF_TWEETS
-    pass
+    # Temporary solution
+    description_queries = DescriptionBuilder.build_politicians_description_query(num_of_tweets)
+    print(description_queries)
 
 def scrape_tweets(scraper):
-    pass
+    TweetExtractor(scraper).get_politicians_tweets()
 
 def schedule_tweets_scraping(scraper, interval):
     if interval is None:
         interval = globals.DEFAULT_SCHEDULER_INTERVAL
-    pass
+    TweetScheduler(scraper).schedule_scraping(interval)
 
 parser = ArgsParser.get_parser()
 args = parser.parse_args()
@@ -48,7 +50,7 @@ if args.command == globals.add_twitter_account_cmd:
     add_twitter_account(scraper, args.account_name)
 elif args.command == globals.build_description_queries_cmd:
     print("Building description queries...")
-    build_description_queries(scraper, args.num_of_tweets)
+    build_description_queries(args.num_of_tweets)
 elif args.command == globals.scrape_tweets_cmd:
     print("Scraping tweets...")
     scrape_tweets(scraper)
