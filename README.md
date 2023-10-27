@@ -1,4 +1,8 @@
-# Install and init
+# Polinet
+
+Application to scrape and process tweets of the politicians.
+
+## Install and init
 
 To install required packages run:
 
@@ -12,11 +16,11 @@ Then to create necessary directories (`data` and `data/tweets`) and files (`data
 python src/init.py
 ```
 
-# Login
+## Login
 
 Application can be used with (`account-login`) or without (`guest-session`) twitter account, it is described later how to choose it. Generally using `account-login` enable you to get more detailed data from twitter. It is likely that you will encounter the rate limits at some point.
 
-# Add a new twitter account
+## Add a new twitter account
 
 General data about the politicians is stored in `data/politicians.json` file. To add new politician to the file and the application run the following command:
 
@@ -30,7 +34,7 @@ or using your twitter account run the following command:
 python src/main.py account-login -e [twitter_email] -u [twitter_username] -p [twitter_password] add-twitter-account [twitter_username]
 ```
 
-# Scrape tweets
+## Scrape tweets
 
 When required politicians are already added, you can scrape the tweets that will be saved in `data/tweets/{politician_twitter_account}.json`. To scrape tweets for all of the politicians from `data/politicians.json` file run the following command:
 
@@ -46,7 +50,7 @@ python src/main.py account-login -e [twitter_email] -u [twitter_username] -p [tw
 
 **Note:** Using `account-login` will enable you to scrape more tweets than using `guest-session`.
 
-# Schedule tweets scraping
+## Schedule tweets scraping
 
 To schedule tweets scraping for all of the politicians from `data/politicians.json` file run the following command:
 
@@ -62,7 +66,7 @@ python src/main.py account-login -e [twitter_email] -u [twitter_username] -p [tw
 
 **Note:** Using `account-login` will enable you to scrape more tweets than using `guest-session`.
 
-# Build query description
+## Build query description
 
 This command builds the query ready to be insert for language models like e.g. ChatGPT offers. Query asks to update the description of the politician based on his current description and [--num-of-tweets] unprocessed tweets.
 
