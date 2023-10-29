@@ -1,3 +1,4 @@
+import globals
 from user.extractor import UserExtractor
 from user.utils import PoliticianUtils
 from tweet.utils import TweetUtils
@@ -69,25 +70,43 @@ class TweetExtractor:
             tweets += TweetExtractor.extract_tweets(raw_tweet_data)
         return tweets
     
-    def __get_politicians_tweets(self, politicians):
+    def __get_politician_tweets(self, politician):
+        print(f"Getting tweets for {politician['user_account_name']}...")
+        scraped_tweets = self.__scrape_tweets(politician)
+        if scraped_tweets is None:
+            return False
+        
+        saved_tweets = TweetUtils.read_tweets(politician)
+        combined_tweets = TweetUtils.combine_tweets(saved_tweets, scraped_tweets)
+        TweetUtils.save_tweets(politician, combined_tweets)
+        PoliticianUtils.set_politician_last_updated_to_now(politician)
+        print(f"Saving {len(combined_tweets) - len(saved_tweets)} new tweets for {politician['user_account_name']}")
+        PoliticianUtils.save_politician(politician)
+        
+        return True
+        
+    def __get_all_politicians_tweets(self, politicians):
         for politician in PoliticianUtils.sort_by_last_modified(politicians):
-            print(f"Getting tweets for {politician['user_account_name']}...")
-            scraped_tweets = self.__scrape_tweets(politician)
-            if scraped_tweets is None:
+            scraped = self.__get_politician_tweets(politician)
+            if not scraped:
                 return False
-            
-            saved_tweets = TweetUtils.read_tweets(politician)
-            combined_tweets = TweetUtils.combine_tweets(saved_tweets, scraped_tweets)
-            TweetUtils.save_tweets(politician, combined_tweets)
-            PoliticianUtils.set_politician_last_updated_to_now(politician)
-            print(f"Saving {len(combined_tweets) - len(saved_tweets)} new tweets for {politician['user_account_name']}")
-            PoliticianUtils.save_politicans(politicians)
             
         return True
         
-    def get_politicians_tweets(self):
+    def get_all_politicians_tweets(self):
+        print("Getting tweets for all saved politicians...")
         politicians = PoliticianUtils.read_politicians()
-        succeeded = self.__get_politicians_tweets(politicians)
+        succeeded = self.__get_all_politicians_tweets(politicians)
+        print("Result of scraping tweets: ", "Succeeded" if succeeded else "Failed")
+        
+    def get_politician_tweets(self, account_name):
+        print(f"Getting tweets for {account_name}...")
+        politician = PoliticianUtils.read_politcian_by_account_name(account_name)
+        if politician is None:
+            print(f"Politician with account name {account_name} is not saved in {globals.POLITICIANS_FILE}.")
+            return
+        
+        succeeded = self.__get_politician_tweets(politician)
         print("Result of scraping tweets: ", "Succeeded" if succeeded else "Failed")
 
     

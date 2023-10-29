@@ -10,11 +10,11 @@ class TweetScheduler:
     def schedule_scraping(self, every_minutes):
         print(f"Scheduling scraping every {every_minutes} minutes.")
         schedule.every(int(every_minutes)).minutes.do(
-            lambda: TweetExtractor(self.scraper).get_politicians_tweets()
+            lambda: TweetExtractor(self.scraper).get_all_politicians_tweets()
         )
         
         # Start job immaditealy and then every [every_minutes] minutes
-        TweetExtractor(self.scraper).get_politicians_tweets()
+        TweetExtractor(self.scraper).get_all_politicians_tweets()
 
         while True:
             schedule.run_pending()

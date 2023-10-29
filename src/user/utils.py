@@ -7,12 +7,12 @@ class PoliticianUtils:
         
     def __init__(self, scraper):
         self.scraper = scraper
-            
-    def __save_politician(politician):
+        
+    def __add_politician(politician):
         politicians = PoliticianUtils.read_politicians()
         politicians.append(politician)
         PoliticianUtils.__save_politicans(politicians)
-    
+        
     def __build_politician(user):
         return {
             "user_id": user["user_id"],
@@ -37,6 +37,14 @@ class PoliticianUtils:
     def set_politician_last_updated_to_now(politician):
         politician["last_modified"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     
+    def save_politician(politician):
+        politicians = PoliticianUtils.read_politicians()
+        for i in range(len(politicians)):
+            if politicians[i]["user_id"] == politician["user_id"]:
+                politicians[i] = politician
+                PoliticianUtils.save_politicans(politicians)
+                return
+        
     def save_politicans(politicians):
         with open(gl.POLITICIANS_FILE, 'w+', encoding="utf8") as file:
             json.dump({"politicians": politicians}, file, indent=4, ensure_ascii=False)
@@ -49,10 +57,17 @@ class PoliticianUtils:
             data = json.load(file)
             return data["politicians"]
         
-    def fetch_and_save_politican(self, account_name):
+    def fetch_and_add_politican(self, account_name):
         if PoliticianUtils.__check_if_politician_exists(account_name):
             print(f"Politician with account name {account_name} already exists.")
             return
         
         politician = self.__fetch_politician(account_name)
-        PoliticianUtils.__save_politician(politician)
+        PoliticianUtils.__add_politician(politician)
+        
+    def read_politcian_by_account_name(account_name):
+        politicians = PoliticianUtils.read_politicians()
+        for politician in politicians:
+            if politician["user_account_name"] == account_name:
+                return politician
+        return None
