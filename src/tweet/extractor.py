@@ -57,12 +57,15 @@ class TweetExtractor:
                     continue
         return tweets
 
-    def __scrape_tweets(self, politician):
+    def __scrape_tweets(self, politician, limit):
         raw_tweets_data = None
         tweets = []
         
         try:
-            raw_tweets_data = self.scraper.tweets([politician['user_id']])
+            if limit is None:
+                raw_tweets_data = self.scraper.tweets([politician['user_id']]) 
+            else: 
+                raw_tweets_data = self.scraper.tweets([politician['user_id']], limit)
         except:
             print(f"Failed to scrape tweets for {politician['user_account_name']}. Rate limit exceeded.")
             return None
@@ -71,9 +74,9 @@ class TweetExtractor:
             tweets += TweetExtractor.extract_tweets(raw_tweet_data)
         return tweets
     
-    def __get_politician_tweets(self, politician):
+    def __get_politician_tweets(self, politician, limit):
         print(f"Getting tweets for {politician['user_account_name']}...")
-        scraped_tweets = self.__scrape_tweets(politician)
+        scraped_tweets = self.__scrape_tweets(politician, limit = limit)
         if scraped_tweets is None:
             return False
         
@@ -86,28 +89,28 @@ class TweetExtractor:
         
         return True
         
-    def __get_all_politicians_tweets(self, politicians):
+    def __get_all_politicians_tweets(self, politicians, limit):
         for politician in PoliticianUtils.sort_by_last_modified(politicians):
-            scraped = self.__get_politician_tweets(politician)
+            scraped = self.__get_politician_tweets(politician, limit)
             if not scraped:
                 return False
             
         return True
         
-    def get_all_politicians_tweets(self):
+    def get_all_politicians_tweets(self, limit):
         print("Getting tweets for all saved politicians...")
         politicians = PoliticianUtils.read_politicians()
-        succeeded = self.__get_all_politicians_tweets(politicians)
+        succeeded = self.__get_all_politicians_tweets(politicians, limit)
         print("Result of scraping tweets: ", "Succeeded" if succeeded else "Failed")
         
-    def get_politician_tweets(self, account_name):
+    def get_politician_tweets(self, account_name, limit):
         print(f"Getting tweets for {account_name}...")
         politician = PoliticianUtils.read_politcian_by_account_name(account_name)
         if politician is None:
             print(f"Politician with account name {account_name} is not saved in {globals.POLITICIANS_FILE}.")
             return
         
-        succeeded = self.__get_politician_tweets(politician)
+        succeeded = self.__get_politician_tweets(politician, limit)
         print("Result of scraping tweets: ", "Succeeded" if succeeded else "Failed")
 
     
