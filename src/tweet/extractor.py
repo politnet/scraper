@@ -16,7 +16,7 @@ class TweetExtractor:
                 entries += instruction['entries']
             elif 'entry' in instruction:
                 entries += [instruction['entry']]
-        return entries
+        return list(filter(lambda entry: entry['entryId'].startswith('tweet'), entries))
 
     def extract_tweet_data(result):
         user = result['core']['user_results']['result']
@@ -50,6 +50,7 @@ class TweetExtractor:
             if 'tweet' in entry['entryId']:
                 try:
                     tweet_full_data = entry['content']['itemContent']['tweet_results']['result']
+                    tweet_full_data = tweet_full_data if 'core' in tweet_full_data else tweet_full_data['tweet']
                     tweets.append(TweetExtractor.extract_tweet_data(tweet_full_data))
                 except KeyError as e:
                     print("Skipping entry due to the KeyError. Error: ", e)
