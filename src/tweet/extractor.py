@@ -7,22 +7,29 @@ class TweetExtractor:
     
     def __init__(self, scraper):
         self.scraper = scraper
-        
-    def extract_entries(data):
+    
+    def __extract_instructions(data):
+        return data['data']['user']['result']['timeline_v2']['timeline']['instructions']
+    
+    def __extract_tweet(result):
+        if result['__typename'] == "Tweet":
+            return TweetExtractor.__extract_tweet_data(result)
+        elif result['__typename'] == 'TweetWithVisibilityResults':
+            return TweetExtractor.__extract_tweet_data(result['tweet'])
+    
+    def __extract_entries(data):
         entries = []
-        instructions = data['data']['user']['result']['timeline_v2']['timeline']['instructions']
+        instructions = TweetExtractor.__extract_instructions(data)
         for instruction in instructions:
-            if 'entries' in instruction:
-                entries += instruction['entries']
-            elif 'entry' in instruction:
-                entries += [instruction['entry']]
+            entries += instruction['entries'] if 'entries' in instruction else []
+            entries += [instruction['entry']] if 'entry' in instruction else []
         return list(filter(lambda entry: entry['entryId'].startswith('tweet'), entries))
 
-    def extract_tweet_data(result):
+    def __extract_tweet_data(result):
         user = result['core']['user_results']['result']
         legacy = result['legacy']
         if 'retweeted_status_result' in legacy:
-            tweetData = TweetExtractor.extract_tweet(legacy['retweeted_status_result']['result'])
+            tweetData = TweetExtractor.__extract_tweet(legacy['retweeted_status_result']['result'])
             tweetData['reposted'] = True
             tweetData['timeline_owner'] = UserExtractor.extract_user(user)
             return tweetData
@@ -38,20 +45,14 @@ class TweetExtractor:
                 "processed": False
             }
     
-    def extract_tweet(result):
-        if result['__typename'] == "Tweet":
-            return TweetExtractor.extract_tweet_data(result)
-        elif result['__typename'] == 'TweetWithVisibilityResults':
-            return TweetExtractor.extract_tweet_data(result['tweet'])
-    
-    def extract_tweets(data):
+    def __extract_tweets(data):
         tweets = []
-        for entry in TweetExtractor.extract_entries(data):
+        for entry in TweetExtractor.__extract_entries(data):
             if 'tweet' in entry['entryId']:
                 try:
                     tweet_full_data = entry['content']['itemContent']['tweet_results']['result']
                     tweet_full_data = tweet_full_data if 'core' in tweet_full_data else tweet_full_data['tweet']
-                    tweets.append(TweetExtractor.extract_tweet_data(tweet_full_data))
+                    tweets.append(TweetExtractor.__extract_tweet_data(tweet_full_data))
                 except KeyError as e:
                     print("Skipping entry due to the KeyError. Error: ", e)
                     continue
@@ -71,7 +72,7 @@ class TweetExtractor:
             return None
         
         for raw_tweet_data in raw_tweets_data:
-            tweets += TweetExtractor.extract_tweets(raw_tweet_data)
+            tweets += TweetExtractor.__extract_tweets(raw_tweet_data)
         return tweets
     
     def __get_politician_tweets(self, politician, limit):
