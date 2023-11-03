@@ -22,13 +22,16 @@ def build_description_queries(num_of_tweets):
 
 def scrape_tweets(scraper, account_name):
     if account_name is None:
-        TweetProcessor(scraper).get_politicians_tweets()
+        TweetProcessor(scraper).get_all_politicians_tweets()
     else:
         TweetProcessor(scraper).get_politician_tweets_by_account_name(account_name)
 
-def schedule_tweets_scraping(scraper, interval):
+def schedule_tweets_scraping(scraper, interval, limit):
     interval = globals.DEFAULT_SCHEDULER_INTERVAL if interval is None else interval
-    TweetScheduler(scraper).schedule_scraping(interval)
+    if limit is None:
+        TweetScheduler(scraper).schedule_scraping(interval)
+    else:
+        TweetScheduler(scraper).schedule_scraping(interval, limit)
 
 parser = ArgsParser.get_parser()
 args = parser.parse_args()
@@ -47,6 +50,6 @@ elif args.command == globals.scrape_tweets_cmd:
     scrape_tweets(scraper, args.account_name)
 elif args.command == globals.schedule_tweets_scraping_cmd:
     print("Scheduling tweets scraping..")
-    schedule_tweets_scraping(scraper, args.interval)
+    schedule_tweets_scraping(scraper, args.interval, args.limit)
 else:
     parser.error("Invalid command.")

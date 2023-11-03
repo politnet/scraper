@@ -2,18 +2,19 @@ import globals as gl
 import json
 import datetime
 from user.extractor import UserExtractor
+from twitter.scraper import Scraper
 
 class PoliticianUtils:
         
-    def __init__(self, scraper):
+    def __init__(self, scraper : Scraper):
         self.scraper = scraper
         
-    def __add_politician(politician):
+    def __add_politician(politician : dict):
         politicians = PoliticianUtils.read_politicians()
         politicians.append(politician)
         PoliticianUtils.save_politicians(politicians)
         
-    def __build_politician(user):
+    def __build_politician(user : dict):
         return {
             "user_id": user["user_id"],
             "user_full_name": user["user_full_name"],
@@ -22,22 +23,22 @@ class PoliticianUtils:
             "last_modified": datetime.datetime.now(datetime.timezone.utc).isoformat()
         }
         
-    def __fetch_politician(self, account_name):
+    def __fetch_politician(self, account_name : str):
         raw_user = self.scraper.users([account_name])[0]
         user = UserExtractor.extract_user(raw_user['data']['user']['result'])
         return PoliticianUtils.__build_politician(user)     
     
-    def __check_if_politician_exists(account_name):
+    def __check_if_politician_exists(account_name : str):
         politicians = PoliticianUtils.read_politicians()
         for politician in politicians:
             if politician["user_account_name"] == account_name:
                 return True
         return False
     
-    def set_politician_last_updated_to_now(politician):
+    def set_politician_last_updated_to_now(politician : dict):
         politician["last_modified"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     
-    def save_politician(politician):
+    def save_politician(politician : dict):
         politicians = PoliticianUtils.read_politicians()
         for i in range(len(politicians)):
             if politicians[i]["user_id"] == politician["user_id"]:
@@ -45,11 +46,11 @@ class PoliticianUtils:
                 PoliticianUtils.save_politicians(politicians)
                 return
         
-    def save_politicians(politicians):
+    def save_politicians(politicians : list):
         with open(gl.POLITICIANS_FILE, 'w+', encoding="utf8") as file:
             json.dump({"politicians": politicians}, file, indent=4, ensure_ascii=False)
             
-    def sort_by_last_modified(politicians):
+    def sort_by_last_modified(politicians : list):
         return sorted(politicians, key=lambda politician: politician['last_modified'])
 
     def read_politicians():
