@@ -12,7 +12,7 @@ class TweetScraper:
     def __init__(self, scraper : Scraper):
         self.scraper = scraper      
         
-    def __scrape_tweets(self, politicians : dict, limit=math.inf): 
+    def __scrape_tweets(self, politicians : dict, limit): 
         politicians_account_names = [politician['user_account_name'] for politician in politicians]
         TweetScraper.logger.info(f"Scraping tweets for {politicians_account_names} with limit of {limit} tweets...")
         

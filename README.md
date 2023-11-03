@@ -16,22 +16,12 @@ Then to create necessary directories (`data` and `data/tweets`) and files (`data
 python src/init.py
 ```
 
-## Login
-
-Application can be used with (`account-login`) or without (`guest-session`) twitter account, it is described later how to choose it. Generally using `account-login` enable you to get more detailed data from twitter. It is likely that you will encounter the rate limits at some point.
-
 ## Add a politician
 
 General data about the politicians is stored in `data/politicians.json` file. To add new politician to the file and the application run the following command:
 
 ```bash
-python src/main.py guest-session add-twitter-account [twitter_username] [politcal_party]
-```
-
-or using your twitter account run the following command:
-
-```bash
-python src/main.py account-login -e [twitter_email] -u [twitter_username] -p [twitter_password] add-twitter-account [twitter_username] [politcal_party]
+python src/main.py -e [twitter_email] -u [twitter_username] -p [twitter_password] add-twitter-account [twitter_username] [politcal_party]
 ```
 
 ## Scrape tweets - all politicians
@@ -39,57 +29,34 @@ python src/main.py account-login -e [twitter_email] -u [twitter_username] -p [tw
 When required politicians are already added, you can scrape the tweets that will be saved in `data/tweets/{politician_twitter_account}.json`. To scrape tweets for all of the politicians from `data/politicians.json` file run the following command:
 
 ```bash
-python src/main.py guest-session scrape-tweets --limit [max_number_of_tweets]
-```
-
-or using your twitter account run the following command:
-
-```bash
-python src/main.py account-login -e [twitter_email] -u [twitter_username] -p [twitter_password] scrape-tweets --limit [max_number_of_tweets]
+python src/main.py -e [twitter_email] -u [twitter_username] -p [twitter_password] scrape-tweets --limit [max_number_of_tweets] --batch-size [number_of_politicians_per_batch]
 ```
 
 ## Scrape tweets - one politician
 
-Instead of all of the politician, if needed only one can be scraped. As previously it will be saved in `data/tweets/{politician_twitter_account}.json`. Remember that the politician has to be present in `data/politicians.json` file. To start scraping run the following command:
+Instead of all of the politician, if needed, only one can be scraped. As previously it will be saved in `data/tweets/{politician_twitter_account}.json`. Remember that the politician has to be present in `data/politicians.json` file. To start scraping run the following command:
 
 ```bash
-python src/main.py guest-session scrape-tweets --account-name [twitter_username] --limit [max_number_of_tweets]
+python src/main.py -e [twitter_email] -u [twitter_username] -p [twitter_password] scrape-tweets --account-name [twitter_username] --limit [max_number_of_tweets] --batch-size [number_of_politicians_per_batch]
 ```
-
-or using your twitter account run the following command:
-
-```bash
-python src/main.py account-login -e [twitter_email] -u [twitter_username] -p [twitter_password] scrape-tweets --account-name [twitter_username] --limit [max_number_of_tweets]
-```
-
-**Note:** Using `account-login` will enable you to scrape more tweets than using `guest-session`.
+**Note**: Default `limit = math.inf` and `batch-size = 1`
 
 ## Schedule tweets scraping - all politicians
 
 To schedule tweets scraping for all of the politicians from `data/politicians.json` file run the following command:
 
 ```bash
-python src/main.py guest-session schedule-tweets-scraping --interval [interval_in_minutes] --limit [max_number_of_tweets]
+python src/main.py  -e [twitter_email] -u [twitter_username] -p [twitter_password] schedule-tweets-scraping --interval [interval_in_minutes] --limit [max_number_of_tweets] --batch-size [number_of_politicians_per_batch]
 ```
 
-or using your twitter account run the following command:
-
-```bash
-python src/main.py account-login -e [twitter_email] -u [twitter_username] -p [twitter_password] schedule-tweets-scraping --interval [interval_in_minutes] --limit [max_number_of_tweets]
-```
-
-**Note:** Using `account-login` will enable you to scrape more tweets than using `guest-session`.
+**Note**: Default `limit = math.inf` and `batch-size = 1`
 
 ## Build query description
 
 This command builds the query ready to be insert for language models like e.g. ChatGPT offers. Query asks to update the description of the politician based on his current description and [--num-of-tweets] unprocessed tweets.
 
 ```bash
-python src/main.py guest-session build-query-description --num-of-tweets [num_of_tweets]
+python src/main.py -e [twitter_email] -u [twitter_username] -p [twitter_password] build-query-description --num-of-tweets [num_of_tweets]
 ```
 
-or using your twitter account run the following command:
-
-```bash
-python src/main.py account-login -e [twitter_email] -u [twitter_username] -p [twitter_password] build-query-description --num-of-tweets [num_of_tweets]
-```
+**Note**: Default `num-of-tweets = 25`
