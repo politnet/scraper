@@ -7,9 +7,6 @@ from processor.scheduler import TweetScheduler
 from twitter.scraper import Scraper
 from twitter.util import init_session
 
-def get_guest_scraper():
-    return Scraper(session=init_session(), out=globals.OUT_DIRECTORY)
-
 def get_account_scraper(args):
     return Scraper(email=args.email, username=args.username, password=args.password, out=globals.OUT_DIRECTORY)  
 
@@ -37,15 +34,7 @@ parser = ArgsParser.get_parser()
 args = parser.parse_args()
 
 # Login parsing
-scraper = None
-if args.login == globals.account_login_cmd:
-    print("Using twitter account.")
-    scraper = get_account_scraper(args)
-elif args.login == globals.guest_session_cmd:
-    print("Using guest session.")
-    scraper = get_guest_scraper()
-else:
-    parser.error("Invalid login method.")
+scraper  = get_account_scraper(args)
     
 if args.command == globals.add_twitter_account_cmd:
     print(f"Adding twitter account {args.account_name}...")

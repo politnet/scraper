@@ -9,7 +9,7 @@ class TweetScraper:
     
     def scrape_tweets(self, politician):
         try:
-            raw_tweets_data = self.scraper.tweets([politician['user_id']])
+            raw_tweets_data = self.scraper.tweets([politician['user_id']], limit=10) # remove limit!!!
             tweets = []
             for raw_tweet_data in raw_tweets_data:
                 tweets += TweetExtractor.extract_tweets(raw_tweet_data)
