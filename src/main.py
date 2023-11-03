@@ -31,7 +31,7 @@ def schedule_tweets_scraping(scraper, interval, limit):
     if limit is None:
         TweetScheduler(scraper).schedule_scraping(interval)
     else:
-        TweetScheduler(scraper).schedule_scraping(interval, limit)
+        TweetScheduler(scraper).schedule_scraping(interval, int(limit))
 
 parser = ArgsParser.get_parser()
 args = parser.parse_args()

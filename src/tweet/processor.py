@@ -50,7 +50,7 @@ class TweetProcessor:
             tweets_by_politician = TweetProcessor.__split_tweets_by_politician(politician_batch, scraped_tweets)
             for account_name, tweets in tweets_by_politician.items():
                 politician = next((politician for politician in politician_batch if politician['user_account_name'] == account_name))
-                TweetProcessor.__split_tweets_by_politician(politician, tweets)
+                TweetProcessor.__combine_and_save_tweets(politician, tweets)
             
             return True
               
