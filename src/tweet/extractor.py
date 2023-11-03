@@ -1,14 +1,15 @@
 from user.extractor import UserExtractor
+from twitter.scraper import Scraper
 
 class TweetExtractor:
     
-    def __init__(self, scraper):
+    def __init__(self, scraper : Scraper):
         self.scraper = scraper
     
-    def extract_instructions(data):
+    def extract_instructions(data : dict):
         return data['data']['user']['result']['timeline_v2']['timeline']['instructions']
     
-    def extract_tweet_entries(data):
+    def extract_tweet_entries(data : dict):
         entries = []
         instructions = TweetExtractor.extract_instructions(data)
         for instruction in instructions:
@@ -16,7 +17,7 @@ class TweetExtractor:
             entries += [instruction['entry']] if 'entry' in instruction else []
         return list(filter(lambda entry: entry['entryId'].startswith('tweet'), entries))
 
-    def extract_tweet_data(result):
+    def extract_tweet_data(result : dict):
         result = result if 'core' in result else result['tweet']
         user = result['core']['user_results']['result']
         legacy = result['legacy']
@@ -37,7 +38,7 @@ class TweetExtractor:
                 "processed": False
             }
     
-    def extract_tweets(data):
+    def extract_tweets_from_data(data : dict):
         tweets = []
         for entry in TweetExtractor.extract_tweet_entries(data):
             if 'tweet' in entry['entryId']:
@@ -49,3 +50,8 @@ class TweetExtractor:
                     continue
         return tweets
     
+    def extract_tweets(raw_tweets_data : dict):
+        tweets = []
+        for raw_tweet_data in raw_tweets_data:
+            tweets += TweetExtractor.extract_tweets_from_data(raw_tweet_data)
+        return tweets

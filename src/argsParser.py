@@ -15,11 +15,15 @@ class ArgsParser:
     def build_scrape_tweets_subparser(subparsers):
         parser = subparsers.add_parser(globals.scrape_tweets_cmd, help="Scrape tweets of all saved politicians")
         parser.add_argument("--account-name", help="Name of the single account to scrape")
+        parser.add_argument("--limit", help="Limit of number of scraped tweets")
+        parser.add_argument("--batch-size", help="Number of scraper politicians per request")
+
         
     def build_schedule_tweets_scraping_subparser(subparsers):
         parser = subparsers.add_parser(globals.schedule_tweets_scraping_cmd, help="Schedule tweets scraping of saved politicians")
-        parser.add_argument("--interval", help="Interval between scraping in minutes")
+        parser.add_argument("interval", help="Interval between scraping in minutes")
         parser.add_argument("--limit", help="Limit of number of scraped tweets")
+        parser.add_argument("--batch-size", help="Number of scraper politicians per request")
 
     def get_parser():
         parser = ArgumentParser(description="Twitter Account Management")

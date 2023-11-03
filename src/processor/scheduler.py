@@ -1,35 +1,19 @@
 import schedule
 import time
-from tweet.processor import TweetProcessor
+from tweet.scraper import TweetScraper
 
 class TweetScheduler:
     
     def __init__(self, scraper):
         self.scraper = scraper
-        
-    def schedule_scraping(self, every_minutes):
-        print(f"Scheduling scraping every {every_minutes} minutes.")
-        
-        schedule.every(int(every_minutes)).minutes.do(
-            lambda: TweetProcessor(self.scraper).get_all_politicians_tweets()
-        )
-        
-        # Start job immaditealy and then every [every_minutes] minutes
-        TweetProcessor(self.scraper).get_all_politicians_tweets()
-
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
             
-    def schedule_scraping_with_scraping(self, every_minutes, limit):
-        print(f"Scheduling scraping every {every_minutes} minutes with limit of {limit} tweets.")
-        
+    def schedule_scraping(self, every_minutes, limit, batch_size):   
         schedule.every(int(every_minutes)).minutes.do(
-            lambda: TweetProcessor(self.scraper).get_all_politicians_tweets_in_batch(limit)
+            lambda: TweetScraper(self.scraper).scrape_all_politicians_tweets(limit, batch_size)
         )
         
         # Start job immaditealy and then every [every_minutes] minutes
-        TweetProcessor(self.scraper).get_all_politicians_tweets_in_batch(limit)
+        TweetScraper(self.scraper).scrape_all_politicians_tweets(limit, batch_size)
 
         while True:
             schedule.run_pending()

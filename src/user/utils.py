@@ -1,4 +1,4 @@
-import globals as gl
+import globals
 import json
 import datetime
 from user.extractor import UserExtractor
@@ -47,14 +47,14 @@ class PoliticianUtils:
                 return
         
     def save_politicians(politicians : list):
-        with open(gl.POLITICIANS_FILE, 'w+', encoding="utf8") as file:
+        with open(globals.POLITICIANS_FILE, 'w+', encoding="utf8") as file:
             json.dump({"politicians": politicians}, file, indent=4, ensure_ascii=False)
             
     def sort_by_last_modified(politicians : list):
         return sorted(politicians, key=lambda politician: politician['last_modified'])
 
     def read_politicians():
-        with open(gl.POLITICIANS_FILE, 'r', encoding="utf8") as file:
+        with open(globals.POLITICIANS_FILE, 'r', encoding="utf8") as file:
             data = json.load(file)
             return data["politicians"]
         
