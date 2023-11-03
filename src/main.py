@@ -1,5 +1,4 @@
 import globals
-import math
 
 from argsParser import ArgsParser
 from user.utils import PoliticianUtils
@@ -15,23 +14,22 @@ def add_twitter_account(scraper, account_name, political_party):
     PoliticianUtils(scraper).fetch_and_add_politican(account_name, political_party)
 
 def build_description_queries(num_of_tweets):
-    if num_of_tweets is None:
-        num_of_tweets = globals.DEFAULT_DESCRIPTION_QUERY_NUM_OF_TWEETS
+    num_of_tweets = num_of_tweets if num_of_tweets is None else globals.DEFAULT_DESCRIPTION_QUERY_NUM_OF_TWEETS
     # Temporary solution
     description_queries = DescriptionBuilder.build_politicians_description_query(num_of_tweets)
     logger.info(description_queries)
 
 def scrape_tweets(scraper, account_name, limit, batch_size):
-    limit = int(limit) if limit is not None else math.inf
-    batch_size = int(batch_size) if limit is not None else 1
+    limit = int(limit) if limit is not None else globals.DEFAULT_LIMIT
+    batch_size = int(batch_size) if limit is not None else globals.DEFAULT_BATCH_SIZE
     if account_name is None:
         TweetScraper(scraper).scrape_all_politicians_tweets(limit, batch_size)
     else:
         TweetScraper(scraper).scrape_politician_tweets_by_account_name(account_name, limit)
 
 def schedule_tweets_scraping(scraper, interval, limit, batch_size):
-    limit = int(limit) if limit is not None else math.inf
-    batch_size = int(batch_size) if batch_size is not None else 1
+    limit = int(limit) if limit is not None else globals.DEFAULT_LIMIT
+    batch_size = int(batch_size) if batch_size is not None else globals.DEFAULT_BATCH_SIZE
     TweetScheduler(scraper).schedule_scraping(interval, limit, batch_size)
 
 parser = ArgsParser.get_parser()

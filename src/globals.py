@@ -1,5 +1,12 @@
+import math
+import logging
+from logging.handlers import TimedRotatingFileHandler
+import datetime
+
 # Default values for the application
 DEFAULT_DESCRIPTION_QUERY_NUM_OF_TWEETS = 25
+DEFAULT_LIMIT = math.inf
+DEFAULT_BATCH_SIZE = 1
 
 # Command line arguments
 add_twitter_account_cmd = "add-twitter-account"
@@ -13,10 +20,6 @@ DATA_DIRECTORY = "data"
 LOGS_DIRECTORY = "logs"
 TWEETS_DIRECTORY = f"{DATA_DIRECTORY}/tweets"
 POLITICIANS_FILE = f"{DATA_DIRECTORY}/politicians.json"
-
-import logging
-from logging.handlers import TimedRotatingFileHandler
-import datetime
 
 def get_logger(logger_name):
     logger = logging.getLogger(logger_name)
