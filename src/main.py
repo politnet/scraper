@@ -1,4 +1,5 @@
 import globals
+import math
 
 from argsParser import ArgsParser
 from user.utils import PoliticianUtils
@@ -21,13 +22,17 @@ def build_description_queries(num_of_tweets):
     logger.info(description_queries)
 
 def scrape_tweets(scraper, account_name, limit, batch_size):
+    limit = int(limit) if limit is not None else math.inf
+    batch_size = int(batch_size) if limit is not None else 1
     if account_name is None:
-        TweetScraper(scraper).scrape_all_politicians_tweets(int(limit), int(batch_size))
+        TweetScraper(scraper).scrape_all_politicians_tweets(limit, batch_size)
     else:
-        TweetScraper(scraper).scrape_politician_tweets_by_account_name(account_name, int(limit))
+        TweetScraper(scraper).scrape_politician_tweets_by_account_name(account_name, limit)
 
 def schedule_tweets_scraping(scraper, interval, limit, batch_size):
-    TweetScheduler(scraper).schedule_scraping(interval, int(limit), int(batch_size))
+    limit = int(limit) if limit is not None else math.inf
+    batch_size = int(batch_size) if batch_size is not None else 1
+    TweetScheduler(scraper).schedule_scraping(interval, limit, batch_size)
 
 parser = ArgsParser.get_parser()
 args = parser.parse_args()
