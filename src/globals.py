@@ -1,7 +1,6 @@
 # Default values for the application
 DEFAULT_DESCRIPTION_QUERY_NUM_OF_TWEETS = 25
 DEFAULT_SCHEDULER_INTERVAL = 15 # minutes
-DEFAULT_TWEETS_LIMIT = 400
 DEFAULT_POLITICIANS_BATCH = 4
 
 # Command line arguments

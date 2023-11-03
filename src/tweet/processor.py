@@ -36,7 +36,7 @@ class TweetProcessor:
         
         return True
   
-    def get_all_politicians_tweets_in_batch(self, limit : int = gl.DEFAULT_TWEETS_LIMIT):
+    def get_all_politicians_tweets_in_batch(self, limit : int):
         print(f"Getting tweets for all politicians with the limit of {limit} tweets...")
         
         sorted_politicians = PoliticianUtils.sort_by_last_modified(PoliticianUtils.read_politicians())
