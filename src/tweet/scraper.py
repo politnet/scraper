@@ -1,24 +1,27 @@
 import math
+
+from globals import get_logger
 from twitter.scraper import Scraper
 from tweet.utils import TweetUtils
 from user.utils import PoliticianUtils
 from tweet.extractor import TweetExtractor
 
 class TweetScraper:
+    logger = get_logger(__name__)
     
     def __init__(self, scraper : Scraper):
-        self.scraper = scraper
-    
+        self.scraper = scraper      
+        
     def __scrape_tweets(self, politicians : dict, limit=math.inf): 
         politicians_account_names = [politician['user_account_name'] for politician in politicians]
-        print(f"Scraping tweets for {politicians_account_names} with limit of {limit} tweets...")
+        TweetScraper.logger.info(f"Scraping tweets for {politicians_account_names} with limit of {limit} tweets...")
         
         try:
             politicians_ids = [politician['user_id'] for politician in politicians]
             raw_tweets_data = self.scraper.tweets(politicians_ids, limit=limit) 
             return TweetExtractor.extract_tweets(raw_tweets_data)
         except AttributeError:
-            print(f"Failed to scrape tweets for {politicians_account_names}. Rate limit exceeded.")
+            TweetScraper.logger.debug(f"Failed to scrape tweets for {politicians_account_names}. Rate limit exceeded.")
             return None
         
     def __split_tweets_by_politician(politicians : list, tweets : list):
@@ -34,7 +37,7 @@ class TweetScraper:
         TweetUtils.save_tweets(politician, combined_tweets)
         PoliticianUtils.set_politician_last_updated_to_now(politician)
         PoliticianUtils.save_politician(politician)  
-        print(f"Saved {len(combined_tweets) - len(saved_tweets)} new tweets for {politician['user_account_name']}")
+        TweetScraper.logger.info(f"Saved {len(combined_tweets) - len(saved_tweets)} new tweets for {politician['user_account_name']}")
         
     def __scrape_politicians_tweets(self, politicians : dict, limit : int):
         scraped_tweets = self.__scrape_tweets(politicians, limit)

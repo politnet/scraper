@@ -5,7 +5,8 @@ from user.extractor import UserExtractor
 from twitter.scraper import Scraper
 
 class PoliticianUtils:
-        
+    logger = globals.get_logger(__name__)
+    
     def __init__(self, scraper : Scraper):
         self.scraper = scraper
         
@@ -60,7 +61,7 @@ class PoliticianUtils:
         
     def fetch_and_add_politican(self, account_name, politacal_party):
         if PoliticianUtils.__check_if_politician_exists(account_name):
-            print(f"Politician with account name {account_name} already exists.")
+            PoliticianUtils.logger.warning(f"Politician with account name {account_name} already exists.")
             return
         
         politician = self.__fetch_politician(account_name)

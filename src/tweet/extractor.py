@@ -1,11 +1,13 @@
+from globals import get_logger
 from user.extractor import UserExtractor
 from twitter.scraper import Scraper
 
 class TweetExtractor:
+    logger = get_logger(__name__)
     
     def __init__(self, scraper : Scraper):
-        self.scraper = scraper
-    
+        self.scraper = scraper   
+        
     def extract_instructions(data : dict):
         return data['data']['user']['result']['timeline_v2']['timeline']['instructions']
     
@@ -46,7 +48,7 @@ class TweetExtractor:
                     tweet_full_data = entry['content']['itemContent']['tweet_results']['result']
                     tweets.append(TweetExtractor.extract_tweet_data(tweet_full_data))
                 except KeyError as e:
-                    print("Skipping entry due to the KeyError. Error: ", e)
+                    TweetExtractor.logger.debug("Skipping entry due to the KeyError. Error: ", e)
                     continue
         return tweets
     
