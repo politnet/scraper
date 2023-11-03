@@ -5,10 +5,14 @@ import os
 
 class TweetUtils:
     
+    def sort_tweets_by_date(tweets):
+        return sorted(tweets, key=lambda tweet: tweet["created_at"])
+    
     def save_tweets(politician, tweets):
         file_path = f'{globals.TWEETS_DIRECTORY}/{politician["user_account_name"]}.json'
         with open(file_path, 'w+', encoding="utf8") as file:
-            json.dump(tweets, file, indent=4, ensure_ascii=False)
+            sorted_tweets = sort_tweets_by_date(tweets)
+            json.dump(sorted_tweets, file, indent=4, ensure_ascii=False)
             
     def read_tweets(politician):
         file_path = f'{globals.TWEETS_DIRECTORY}/{politician["user_account_name"]}.json'
