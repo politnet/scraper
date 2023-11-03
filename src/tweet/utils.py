@@ -11,7 +11,7 @@ class TweetUtils:
     def save_tweets(politician, tweets):
         file_path = f'{globals.TWEETS_DIRECTORY}/{politician["user_account_name"]}.json'
         with open(file_path, 'w+', encoding="utf8") as file:
-            sorted_tweets = sort_tweets_by_date(tweets)
+            sorted_tweets = TweetUtils.sort_tweets_by_date(tweets)
             json.dump(sorted_tweets, file, indent=4, ensure_ascii=False)
             
     def read_tweets(politician):

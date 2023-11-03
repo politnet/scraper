@@ -61,6 +61,9 @@ class TweetProcessor:
     def get_all_politicians_tweets(self):
         print(f"Getting tweets for all politicians...")
         
-        for politician in PoliticianUtils.read_politicians():
+        sorted_politicians = PoliticianUtils.sort_by_last_modified(PoliticianUtils.read_politicians())
+        
+        for politician in sorted_politicians:
             print(f"Getting tweets for {politician['user_account_name']}...")
-            self.__get_politician_tweets([politician])
+            if not self.__get_politician_tweets([politician]):
+                return

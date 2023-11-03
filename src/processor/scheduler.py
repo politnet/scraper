@@ -21,7 +21,7 @@ class TweetScheduler:
             schedule.run_pending()
             time.sleep(1)
             
-    def schedule_scraping(self, every_minutes, limit):
+    def schedule_scraping_with_scraping(self, every_minutes, limit):
         print(f"Scheduling scraping every {every_minutes} minutes with limit of {limit} tweets.")
         
         schedule.every(int(every_minutes)).minutes.do(
