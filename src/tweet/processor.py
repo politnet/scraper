@@ -52,7 +52,7 @@ class TweetProcessor:
                 politician = next((politician for politician in politician_batch if politician['user_account_name'] == account_name))
                 TweetProcessor.__combine_and_save_tweets(politician, tweets)
             
-            return True
+        return True
               
     def get_politician_tweets_by_account_name(self, account_name : str):
         politician = PoliticianUtils.read_politcian_by_account_name(account_name)
