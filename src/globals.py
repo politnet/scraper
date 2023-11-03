@@ -1,12 +1,10 @@
 # Default values for the application
 DEFAULT_DESCRIPTION_QUERY_NUM_OF_TWEETS = 25
-DEFAULT_SCHEDULER_INTERVAL = 30 # minutes
-DEFAULT_TWEETS_LIMIT = 50
-DEFAULT_POLITICIANS_BATCH = 2
+DEFAULT_SCHEDULER_INTERVAL = 15 # minutes
+DEFAULT_TWEETS_LIMIT = 150
+DEFAULT_POLITICIANS_BATCH = 3
 
 # Command line arguments
-account_login_cmd = "account-login"
-guest_session_cmd = "guest-session"
 add_twitter_account_cmd = "add-twitter-account"
 build_description_queries_cmd = "build-description-queries"
 scrape_tweets_cmd = "scrape-tweets"
