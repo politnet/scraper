@@ -18,7 +18,8 @@ class TweetScraper:
             raw_tweets_data = self.scraper.tweets(politicians_ids) 
             return TweetScraper.extract_tweets(raw_tweets_data)
         except AttributeError:
-            print(f"Failed to scrape tweets for {politicians_ids}. Rate limit exceeded.")
+            politicians_account_names = [politician['user_account_name'] for politician in politicians]
+            print(f"Failed to scrape tweets for {politicians_account_names}. Rate limit exceeded.")
             return None
         
     def scrape_tweets_with_limit(self, politicians : list, limit : int):
@@ -27,5 +28,6 @@ class TweetScraper:
             raw_tweets_data = self.scraper.tweets(politicians_ids, limit=limit)
             return TweetScraper.extract_tweets(raw_tweets_data)
         except AttributeError:
-            print(f"Failed to scrape tweets for {politicians_ids} with limit of {limit} tweets. Rate limit exceeded.")
+            politicians_account_names = [politician['user_account_name'] for politician in politicians]
+            print(f"Failed to scrape tweets for {politicians_account_names} with limit of {limit} tweets. Rate limit exceeded.")
             return None
