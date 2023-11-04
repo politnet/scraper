@@ -3,6 +3,12 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import datetime
 
+# ENVIRONMENT VARIABLES
+TWITTER_EMAIL = "POLINET_TWITTER_EMAIL"
+TWITTER_USERNAME = "POLINET_TWITTER_USERNAME"
+TWITTER_PASSWORD = "POLINET_TWITTER_PASSWORD"
+SAVE_TWEETS_TO_OUT = "POLINET_SAVE_TO_OUT"
+
 # Default values for the application
 DEFAULT_LIMIT = math.inf
 DEFAULT_BATCH_SIZE = 1

@@ -1,0 +1,17 @@
+version: '3.1'
+services:
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+
+  polinet-scraper:
+    image: polinet-scraper
+    environment:
+      POLINET_TWITTER_EMAIL: ${POLINET_TWITTER_EMAIL}
+      POLINET_TWITTER_USERNAME: ${POLINET_TWITTER_USERNAME}
+      POLINET_TWITTER_PASSWORD: ${POLINET_TWITTER_PASSWORD}
+      POLINET_SAVE_TO_OUT: False
+    depends_on:
+      - mongodb

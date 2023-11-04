@@ -1,4 +1,5 @@
 import globals
+import os
 
 from argsParser import ArgsParser
 from politician.utils import PoliticianUtils
@@ -6,8 +7,16 @@ from tweet.scraper import TweetScraper
 from processor.scheduler import TweetScheduler
 from twitter.scraper import Scraper
 
-def get_account_scraper(args):
-    return Scraper(email=args.email, username=args.username, password=args.password, out=globals.OUT_DIRECTORY)  
+def get_account_scraper():
+    email = os.getenv(globals.TWITTER_EMAIL)
+    username = os.getenv(globals.TWITTER_USERNAME)
+    password = os.getenv(globals.TWITTER_PASSWORD)
+    save_to_out = os.getenv(globals.SAVE_TWEETS_TO_OUT)
+    if save_to_out:
+        out_directory = globals.OUT_DIRECTORY
+        return Scraper(email=email, username=username, password=password, out=out_directory)  
+    else:
+        return Scraper(email=email, username=username, password=password, save=False)
 
 def add_twitter_account(scraper, account_name, political_party):
     PoliticianUtils(scraper).fetch_and_add_politican(account_name, political_party)
@@ -27,7 +36,7 @@ def schedule_tweets_scraping(scraper, interval, limit, batch_size):
 
 parser = ArgsParser.get_parser()
 args = parser.parse_args()
-scraper  = get_account_scraper(args)
+scraper  = get_account_scraper()
 logger = globals.get_logger(__name__)
 
 if args.command == globals.add_twitter_account_cmd:

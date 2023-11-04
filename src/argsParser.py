@@ -22,11 +22,7 @@ class ArgsParser:
         parser.add_argument("--batch-size", help="Number of scraper politicians per request")
 
     def get_parser():
-        parser = ArgumentParser(description="Twitter Account Management")
-        parser.add_argument("-e", "--email", required=True, help="Email address")
-        parser.add_argument("-u", "--username", required=True, help="Username")
-        parser.add_argument("-p", "--password", required=True, help="Password")
-        
+        parser = ArgumentParser(description="Twitter Account Management")  
         subparsers = parser.add_subparsers(dest="command", required=True, help="Available commands")
         ArgsParser.build_add_twitter_account_subparser(subparsers)
         ArgsParser.build_scrape_tweets_subparser(subparsers)
