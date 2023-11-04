@@ -5,7 +5,8 @@ FROM python:3.11.6
 WORKDIR /app
 
 # Add the requirment.txt and src directory contents into the container at /app
-ADD . /app
+ADD requirements.txt /app
+ADD ./src /app/src
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
