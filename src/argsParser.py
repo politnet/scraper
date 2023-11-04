@@ -8,10 +8,6 @@ class ArgsParser:
         parser.add_argument("account_name", help="Name of the account to add")
         parser.add_argument("political_party", help="Political party of the politican")
         
-    def build_description_queries_subparser(subparsers):
-        parser = subparsers.add_parser(globals.build_description_queries_cmd, help="Build description queries of saved politicians")
-        parser.add_argument("--num-of-tweets", help="Description queries to build")
-        
     def build_scrape_tweets_subparser(subparsers):
         parser = subparsers.add_parser(globals.scrape_tweets_cmd, help="Scrape tweets of all saved politicians")
         parser.add_argument("--account-name", help="Name of the single account to scrape")
@@ -33,7 +29,6 @@ class ArgsParser:
         
         subparsers = parser.add_subparsers(dest="command", required=True, help="Available commands")
         ArgsParser.build_add_twitter_account_subparser(subparsers)
-        ArgsParser.build_description_queries_subparser(subparsers)
         ArgsParser.build_scrape_tweets_subparser(subparsers)
         ArgsParser.build_schedule_tweets_scraping_subparser(subparsers)
         

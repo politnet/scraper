@@ -4,13 +4,11 @@ from logging.handlers import TimedRotatingFileHandler
 import datetime
 
 # Default values for the application
-DEFAULT_DESCRIPTION_QUERY_NUM_OF_TWEETS = 25
 DEFAULT_LIMIT = math.inf
 DEFAULT_BATCH_SIZE = 1
 
 # Command line arguments
 add_twitter_account_cmd = "add-twitter-account"
-build_description_queries_cmd = "build-description-queries"
 scrape_tweets_cmd = "scrape-tweets"
 schedule_tweets_scraping_cmd = "schedule-tweets-scraping"
 

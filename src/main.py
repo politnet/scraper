@@ -1,9 +1,8 @@
 import globals
 
 from argsParser import ArgsParser
-from user.utils import PoliticianUtils
+from politician.utils import PoliticianUtils
 from tweet.scraper import TweetScraper
-from processor.builder import DescriptionBuilder
 from processor.scheduler import TweetScheduler
 from twitter.scraper import Scraper
 
@@ -12,12 +11,6 @@ def get_account_scraper(args):
 
 def add_twitter_account(scraper, account_name, political_party):
     PoliticianUtils(scraper).fetch_and_add_politican(account_name, political_party)
-
-def build_description_queries(num_of_tweets):
-    num_of_tweets = num_of_tweets if num_of_tweets is None else globals.DEFAULT_DESCRIPTION_QUERY_NUM_OF_TWEETS
-    # Temporary solution
-    description_queries = DescriptionBuilder.build_politicians_description_query(num_of_tweets)
-    logger.info(description_queries)
 
 def scrape_tweets(scraper, account_name, limit, batch_size):
     limit = int(limit) if limit is not None else globals.DEFAULT_LIMIT
@@ -40,9 +33,6 @@ logger = globals.get_logger(__name__)
 if args.command == globals.add_twitter_account_cmd:
     logger.info(f"Adding twitter account {args.account_name}...")
     add_twitter_account(scraper, args.account_name, args.political_party)
-elif args.command == globals.build_description_queries_cmd:
-    logger.info(f"Building description queries out of {args.num_of_tweets} tweets...")
-    build_description_queries(args.num_of_tweets)
 elif args.command == globals.scrape_tweets_cmd:
     logger.info(f"Scraping tweets of {args.account_name} with limit {args.limit} and batch size {args.batch_size}...")
     scrape_tweets(scraper, args.account_name, args.limit, args.batch_size)
