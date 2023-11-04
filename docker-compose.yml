@@ -5,6 +5,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: polinet-db
+    ports:
+      - 27017:27017
+    
 
   polinet-scraper:
     image: polinet-scraper
