@@ -1,9 +1,7 @@
-import math
-
 from globals import get_logger
 from twitter.scraper import Scraper
 from tweet.utils import TweetUtils
-from user.utils import PoliticianUtils
+from politician.utils import PoliticianUtils
 from tweet.extractor import TweetExtractor
 
 class TweetScraper:

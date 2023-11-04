@@ -50,13 +50,3 @@ python src/main.py  -e [twitter_email] -u [twitter_username] -p [twitter_passwor
 ```
 
 **Note**: Default `limit = math.inf` and `batch-size = 1`
-
-## Build query description
-
-This command builds the query ready to be insert for language models like e.g. ChatGPT offers. Query asks to update the description of the politician based on his current description and [--num-of-tweets] unprocessed tweets.
-
-```bash
-python src/main.py -e [twitter_email] -u [twitter_username] -p [twitter_password] build-query-description --num-of-tweets [num_of_tweets]
-```
-
-**Note**: Default `num-of-tweets = 25`

@@ -1,7 +1,7 @@
 import globals
 import json
 import datetime
-from user.extractor import UserExtractor
+from politician.extractor import UserExtractor
 from twitter.scraper import Scraper
 
 class PoliticianUtils:

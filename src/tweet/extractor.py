@@ -1,5 +1,5 @@
 from globals import get_logger
-from user.extractor import UserExtractor
+from politician.extractor import UserExtractor
 from twitter.scraper import Scraper
 
 class TweetExtractor:
