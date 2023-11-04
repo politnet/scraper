@@ -8,10 +8,10 @@ from processor.scheduler import TweetScheduler
 from twitter.scraper import Scraper
 
 def get_account_scraper():
-    email = os.getenv(globals.TWITTER_EMAIL)
-    username = os.getenv(globals.TWITTER_USERNAME)
-    password = os.getenv(globals.TWITTER_PASSWORD)
-    save_to_out = os.getenv(globals.SAVE_TWEETS_TO_OUT)
+    email = os.environ[globals.TWITTER_EMAIL]
+    username = os.environ[globals.TWITTER_USERNAME]
+    password = os.environ[globals.TWITTER_PASSWORD]
+    save_to_out = os.environ[globals.SAVE_TWEETS_TO_OUT]
     if save_to_out:
         out_directory = globals.OUT_DIRECTORY
         return Scraper(email=email, username=username, password=password, out=out_directory)  
