@@ -1,0 +1,2 @@
+[build]
+startCommand = "python src/init.py && python src/main.py -e $TWITTER_EMAIL -u $TWITTER_USERNAME -p $TWITTER_PASSWORD schedule-tweets-scraping 30"
