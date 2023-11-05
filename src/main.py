@@ -23,7 +23,7 @@ def add_twitter_account(scraper, account_name, political_party):
 
 def scrape_tweets(scraper, account_name, limit, batch_size):
     limit = int(limit) if limit is not None else globals.DEFAULT_LIMIT
-    batch_size = int(batch_size) if limit is not None else globals.DEFAULT_BATCH_SIZE
+    batch_size = int(batch_size) if batch_size is not None else globals.DEFAULT_BATCH_SIZE
     if account_name is None:
         TweetScraper(scraper).scrape_all_politicians_tweets(limit, batch_size)
     else:
