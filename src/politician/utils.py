@@ -3,17 +3,14 @@ import json
 import datetime
 from politician.extractor import UserExtractor
 from twitter.scraper import Scraper
+from pymongo.database import Database 
 
 class PoliticianUtils:
     logger = globals.get_logger(__name__)
     
-    def __init__(self, scraper : Scraper):
+    def __init__(self, scraper : Scraper, db : Database):
         self.scraper = scraper
-        
-    def __add_politician(politician : dict):
-        politicians = PoliticianUtils.read_politicians()
-        politicians.append(politician)
-        PoliticianUtils.save_politicians(politicians)
+        self.db = db
         
     def __build_politician(user : dict):
         return {
@@ -39,17 +36,11 @@ class PoliticianUtils:
     def set_politician_last_updated_to_now(politician : dict):
         politician["last_modified"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     
-    def save_politician(politician : dict):
-        politicians = PoliticianUtils.read_politicians()
-        for i in range(len(politicians)):
-            if politicians[i]["user_id"] == politician["user_id"]:
-                politicians[i] = politician
-                PoliticianUtils.save_politicians(politicians)
-                return
-        
-    def save_politicians(politicians : list):
-        with open(globals.POLITICIANS_FILE, 'w+', encoding="utf8") as file:
-            json.dump({"politicians": politicians}, file, indent=4, ensure_ascii=False)
+    def update_politician(self, politician : dict):
+        collection = self.db[globals.POLITICIANS_COLLECTION]
+        filter = {'user_id': politician['user_id']}
+        update = {'$set': politician}
+        collection.update_one(filter, update)
             
     def sort_by_last_modified(politicians : list):
         return sorted(politicians, key=lambda politician: politician['last_modified'])
@@ -66,7 +57,8 @@ class PoliticianUtils:
         
         politician = self.__fetch_politician(account_name)
         politician['political_party'] = politacal_party
-        PoliticianUtils.__add_politician(politician)
+        collection = self.db[globals.POLITICIANS_COLLECTION]
+        collection.insert_one(politician)
         
     def read_politcian_by_account_name(account_name):
         politicians = PoliticianUtils.read_politicians()

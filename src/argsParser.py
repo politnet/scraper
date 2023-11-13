@@ -13,7 +13,6 @@ class ArgsParser:
         parser.add_argument("--account-name", help="Name of the single account to scrape")
         parser.add_argument("--limit", help="Limit of number of scraped tweets")
         parser.add_argument("--batch-size", help="Number of scraper politicians per request")
-
         
     def build_schedule_tweets_scraping_subparser(subparsers):
         parser = subparsers.add_parser(globals.schedule_tweets_scraping_cmd, help="Schedule tweets scraping of saved politicians")

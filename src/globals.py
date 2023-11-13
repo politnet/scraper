@@ -1,17 +1,24 @@
 import math
 import logging
-from logging.handlers import TimedRotatingFileHandler
+import os
 import datetime
+from logging.handlers import TimedRotatingFileHandler
+from pymongo import MongoClient
 
 # ENVIRONMENT VARIABLES
 TWITTER_EMAIL = "POLINET_TWITTER_EMAIL"
 TWITTER_USERNAME = "POLINET_TWITTER_USERNAME"
 TWITTER_PASSWORD = "POLINET_TWITTER_PASSWORD"
 SAVE_TWEETS_TO_OUT = "POLINET_SAVE_TO_OUT"
+MONGO_DB_CONNECTION_STRING = "POLINET_MONGO_DB_CONNECTION_STRING"
 
 # Default values for the application
 DEFAULT_LIMIT = math.inf
 DEFAULT_BATCH_SIZE = 1
+
+# Database
+DATABASE_NAME = "polinet"
+POLITICIANS_COLLECTION = "politicians"
 
 # Command line arguments
 add_twitter_account_cmd = "add-twitter-account"
@@ -45,5 +52,8 @@ def get_logger(logger_name):
     logger.addHandler(stream_handler)
 
     return logger
+
+def get_db():
+    return MongoClient(os.environ[MONGO_DB_CONNECTION_STRING])[DATABASE_NAME]
 
 

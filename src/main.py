@@ -6,6 +6,7 @@ from politician.utils import PoliticianUtils
 from tweet.scraper import TweetScraper
 from processor.scheduler import TweetScheduler
 from twitter.scraper import Scraper
+from pymongo import MongoClient
 
 def get_account_scraper():
     email = os.environ[globals.TWITTER_EMAIL]
@@ -34,19 +35,27 @@ def schedule_tweets_scraping(scraper, interval, limit, batch_size):
     batch_size = int(batch_size) if batch_size is not None else globals.DEFAULT_BATCH_SIZE
     TweetScheduler(scraper).schedule_scraping(interval, limit, batch_size)
 
-parser = ArgsParser.get_parser()
-args = parser.parse_args()
-scraper  = get_account_scraper()
-logger = globals.get_logger(__name__)
+# parser = ArgsParser.get_parser()
+# args = parser.parse_args()
+# scraper  = get_account_scraper()
+# logger = globals.get_logger(__name__)
+db = globals.get_db()
 
-if args.command == globals.add_twitter_account_cmd:
-    logger.info(f"Adding twitter account {args.account_name}...")
-    add_twitter_account(scraper, args.account_name, args.political_party)
-elif args.command == globals.scrape_tweets_cmd:
-    logger.info(f"Scraping tweets of {args.account_name} with limit {args.limit} and batch size {args.batch_size}...")
-    scrape_tweets(scraper, args.account_name, args.limit, args.batch_size)
-elif args.command == globals.schedule_tweets_scraping_cmd:
-    logger.info(f"Scheduling tweets scraping with interval of {args.interval} minutes, with limit {args.limit} and batch size {args.batch_size}....")
-    schedule_tweets_scraping(scraper, args.interval, args.limit, args.batch_size)
-else:
-    parser.error("Invalid command.")
+# if args.command == globals.add_twitter_account_cmd:
+#     logger.info(f"Adding twitter account {args.account_name}...")
+#     add_twitter_account(scraper, args.account_name, args.political_party)
+# elif args.command == globals.scrape_tweets_cmd:
+#     logger.info(f"Scraping tweets of {args.account_name} with limit {args.limit} and batch size {args.batch_size}...")
+#     scrape_tweets(scraper, args.account_name, args.limit, args.batch_size)
+# elif args.command == globals.schedule_tweets_scraping_cmd:
+#     logger.info(f"Scheduling tweets scraping with interval of {args.interval} minutes, with limit {args.limit} and batch size {args.batch_size}....")
+#     schedule_tweets_scraping(scraper, args.interval, args.limit, args.batch_size)
+# else:
+#     parser.error("Invalid command.")
+
+
+politicians = PoliticianUtils.read_politicians()
+utils = PoliticianUtils(None, db)
+politicians[0]['cursor'] = 'funny_cursor_2'
+utils.update_politician(politicians[0])
+pass

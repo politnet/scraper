@@ -24,4 +24,8 @@ if not os.path.exists(globals.POLITICIANS_FILE):
     with open(globals.POLITICIANS_FILE, 'w') as f:
         f.write("{}")
 
+# Init database
+db = globals.get_db()
+db[globals.POLITICIANS_COLLECTION].create_index("user_id", unique=True)
+
 print("Done.")
