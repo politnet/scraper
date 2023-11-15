@@ -21,6 +21,7 @@ class PoliticianUtils:
             "user_full_name": user["user_full_name"],
             "user_account_name": user["user_account_name"],
             "description": None,
+            "profile_image_url": user["profile_image_url"],
             "last_modified": datetime.datetime.now(datetime.timezone.utc).isoformat()
         }
         
